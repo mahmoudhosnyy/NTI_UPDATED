@@ -55,8 +55,9 @@ typedef enum
 
 void ADC_init(void);
 ADC_ERROR_RETURN ADC_channelSelection(CHANNEL_SELECTION channel);
-ADC_ERROR_RETURN ADC_value(u16 *DataPointer);
+ADC_ERROR_RETURN ADC_Polling(u16 *DataPointer);
 u16 ADC_mapping(u16 adc_lower_range,u16 adc_upper_range,u16 new_lower_range,u16 new_upper_range);
+void ADC_startConversion(void);
 ADC_ERROR_RETURN ADC_setCallBack(u16*result_ptr,void(*a_ptr)(void));
 
 #endif

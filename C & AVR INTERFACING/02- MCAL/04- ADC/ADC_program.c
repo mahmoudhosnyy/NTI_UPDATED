@@ -37,7 +37,7 @@ ADC_ERROR_RETURN ADC_channelSelection(CHANNEL_SELECTION channel){
 		return error;
 }
 
-ADC_ERROR_RETURN ADC_value(u16 *DataPointer){
+ADC_ERROR_RETURN ADC_Polling(u16 *DataPointer){
 	ADC_ERROR_RETURN error =OK;
 	u32 counter=0;
 	if (DataPointer!=NULL){
@@ -72,9 +72,13 @@ u16 ADC_NEW_VALUE = (((u32)((ADC_DATA_Reg-adc_lower_range)*(new_upper_range-new_
 	return ADC_NEW_VALUE;
 }
 
+void ADC_startConversion(void){
+	ADCSRA_Reg->ADSC=ADC_START_CONVERSION;
+}
+
 
 #ifdef ISR_ENABLE
-static volatile void (*g_ptr)(void)=NULL;
+static void (*g_ptr)(void)=NULL;
 static volatile u16 *result=NULL;
 
 /* pointer to fucntion argument : function to be executed when ADC finishes Conversion
@@ -98,8 +102,8 @@ ADC_ERROR_RETURN ADC_setCallBack(u16*result_ptr,void(*a_ptr)(void)){
 	return error;
 }
 
-void __vector_16(void)  _attribute__((signal));
-void __vector_16(void) {
+void __vector_16() __attribute__((signal));
+void __vector_16() {
 	#if DATA_ORGINIZATION == ADJUST_RIGHT
 	*result = ADC_DATA_Reg;
 	#elif DATA_ORGINIZATION == ADJUST_LEFT
